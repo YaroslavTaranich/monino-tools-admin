@@ -5,7 +5,6 @@ import CategoriesPage from "../components/categoriesPage";
 import AuthPage from "../components/authPage";
 import { IUser, getUserProfile } from "../services/authService";
 import PageLayout from "../components/pageLayout";
-import { error } from "console";
 import EditCategoryPage from "../components/editCategoryPage";
 
 interface IUserData {

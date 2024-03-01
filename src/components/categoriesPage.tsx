@@ -1,10 +1,8 @@
-import React from "react";
 import { useFetch } from "../hooks/useFetch";
 import { ICategory, getAllCategories } from "../services/categoryService";
-import { Flex, Space, Spin, Table } from "antd";
+import { Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Link } from "react-router-dom";
-import PageLayout from "./pageLayout";
 import Loader from "./loader";
 
 const columns: ColumnsType<ICategory> = [
