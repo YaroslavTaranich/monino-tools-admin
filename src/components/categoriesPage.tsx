@@ -1,8 +1,8 @@
 import { useFetch } from "../hooks/useFetch";
 import { ICategory, getAllCategories } from "../services/categoryService";
-import { Space, Table } from "antd";
+import { Button, Flex, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loader from "./loader";
 
 const columns: ColumnsType<ICategory> = [
@@ -39,16 +39,22 @@ const columns: ColumnsType<ICategory> = [
 
 const CategoriesPage = () => {
   const { data: categories, loading } = useFetch(getAllCategories());
+  const navigate = useNavigate();
 
   if (loading || !categories) {
     return <Loader />;
   }
 
   return (
-    <Table
-      dataSource={categories.map((cat) => ({ ...cat, key: cat.id }))}
-      columns={columns}
-    />
+    <Flex vertical gap={16}>
+      <Button type="primary" onClick={() => navigate("/category/create")}>
+        Создать категорию
+      </Button>
+      <Table
+        dataSource={categories.map((cat) => ({ ...cat, key: cat.id }))}
+        columns={columns}
+      />
+    </Flex>
   );
 };
 

@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { ITool, getTools } from "../services/toolsService";
 import { Space, Table } from "antd";
 import { Link } from "react-router-dom";
 import { ColumnsType } from "antd/es/table";
 import { useFetch } from "../hooks/useFetch";
-import { AuthContext } from "../router";
 import Loader from "./loader";
 
 const columns: ColumnsType<ITool> = [
@@ -42,9 +41,6 @@ const columns: ColumnsType<ITool> = [
 
 const ToolsPage = () => {
   const { loading, data: tools } = useFetch(getTools());
-  const { userData } = useContext(AuthContext);
-
-  console.log(userData);
 
   if (loading || !tools) {
     return <Loader />;

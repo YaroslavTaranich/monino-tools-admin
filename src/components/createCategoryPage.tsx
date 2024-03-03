@@ -1,39 +1,33 @@
 import React, { useContext, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
-import {
-  ICategory,
-  getCategoryById,
-  updateCategoryById,
-} from "../services/categoryService";
-import { useFetch } from "../hooks/useFetch";
-import Loader from "./loader";
-import { Button, Spin } from "antd";
-import { AuthContext } from "../context/authContext";
-import { isAxiosError } from "axios";
 import CategoryForm from "./categoryForm";
+import { ICategory, createCategory } from "../services/categoryService";
+import { AuthContext } from "../context/authContext";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
+import { Button, Spin } from "antd";
 import { NotificationContext } from "../context/notificationContext";
 
-const EditCategoryPage = () => {
-  const { id } = useParams();
-  const { error, loading, data: category } = useFetch(getCategoryById(id));
-  const { token } = useContext(AuthContext);
+const CreateCategoryPage = () => {
   const { setNotification } = useContext(NotificationContext);
+  const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [isSending, setIsSending] = useState(false);
 
-  if (loading) return <Loader />;
-  if (error || !category || !id || !token) return <Navigate to="/category" />;
+  if (!token) {
+    return <Navigate to="/category" />;
+  }
 
-  const onFinish = async (values: ICategory) => {
+  const onFinish = async (data: ICategory) => {
     setIsSending(true);
     try {
-      await updateCategoryById(id, token, values);
+      const result = await createCategory(token, data);
       setNotification({
         type: "success",
-        message: "Данные обновлены!",
+        message: `Категория ${data.label} создана`,
         decription: <Link to="/category">К списку категорий</Link>,
       });
+      navigate("/category/" + result.id);
     } catch (error) {
-      console.log(error);
       if (isAxiosError(error)) {
         setNotification({
           type: "error",
@@ -46,7 +40,7 @@ const EditCategoryPage = () => {
   };
 
   return (
-    <CategoryForm defaultValues={category} onFinish={onFinish}>
+    <CategoryForm onFinish={onFinish}>
       <Button htmlType="submit" type="primary" disabled={isSending}>
         {isSending ? <Spin size="small" /> : "Сохранить"}
       </Button>
@@ -54,4 +48,4 @@ const EditCategoryPage = () => {
   );
 };
 
-export default EditCategoryPage;
+export default CreateCategoryPage;

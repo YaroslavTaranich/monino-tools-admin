@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import "normalize.css";
 import { BrowserRouter } from "react-router-dom";
 import MyRoutes from "./router";
+import AuthContextProvider from "./context/authContext";
+import NotificationContextProvider from "./context/notificationContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -10,7 +12,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <MyRoutes />
+      <AuthContextProvider>
+        <NotificationContextProvider>
+          <MyRoutes />
+        </NotificationContextProvider>
+      </AuthContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

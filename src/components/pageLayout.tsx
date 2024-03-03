@@ -20,7 +20,7 @@ const PageLayout: FC<PropsWithChildren> = ({ children }) => {
   const { pathname } = useLocation();
 
   return (
-    <Layout style={{ width: "100vw", minHeight: "100vh" }}>
+    <Layout style={{ width: "100%", minHeight: "100vh" }}>
       <Header style={{ display: "flex", alignItems: "center" }}>
         <Menu
           mode="horizontal"

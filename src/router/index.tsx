@@ -1,46 +1,24 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { ReactElement, useContext } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ToolsPage from "../components/toolsPage";
 import CategoriesPage from "../components/categoriesPage";
 import AuthPage from "../components/authPage";
-import { IUser, getUserProfile } from "../services/authService";
 import PageLayout from "../components/pageLayout";
 import EditCategoryPage from "../components/editCategoryPage";
+import CreateCategoryPage from "../components/createCategoryPage";
+import { AuthContext } from "../context/authContext";
+import { notification } from "antd";
+import { ArgsProps } from "antd/es/notification";
 
-interface IUserData {
-  token: string | null;
-  user: IUser | null;
+export interface INotificationData {
+  type: "success" | "error";
+  message?: string | ReactElement;
+  decription?: string | ReactElement;
+  placament?: ArgsProps["placement"];
 }
-
-interface IAuthContext {
-  userData: IUserData;
-  updateUser?: (data: IUserData) => void;
-}
-
-export const AuthContext = createContext<IAuthContext>({
-  userData: { token: null, user: null },
-});
 
 const MyRoutes = () => {
-  const [userData, setUserData] = useState<IUserData>({
-    token: null,
-    user: null,
-  });
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      getUserProfile(token)
-        .then((user) => {
-          setUserData({ token, user });
-        })
-        .catch((error) => console.error("Token expired"));
-    }
-  }, []);
-
-  const updateUser = (data: IUserData) => {
-    setUserData(data);
-  };
+  const { token } = useContext(AuthContext);
 
   const privateRotes = (
     <PageLayout>
@@ -48,6 +26,7 @@ const MyRoutes = () => {
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/category">
           <Route index element={<CategoriesPage />} />
+          <Route path="create" element={<CreateCategoryPage />} />
           <Route path=":id" element={<EditCategoryPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/tools" />} />
@@ -62,11 +41,7 @@ const MyRoutes = () => {
     </Routes>
   );
 
-  return (
-    <AuthContext.Provider value={{ userData, updateUser }}>
-      {!!userData.token ? privateRotes : publicRoutes}
-    </AuthContext.Provider>
-  );
+  return !!token ? privateRotes : publicRoutes;
 };
 
 export default MyRoutes;

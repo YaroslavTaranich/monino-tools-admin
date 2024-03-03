@@ -1,7 +1,7 @@
 import { Button, Form, Input, Space } from "antd";
 import React, { useContext, useState } from "react";
 import { authUser } from "../services/authService";
-import { AuthContext } from "../router";
+import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 
 type FieldType = {

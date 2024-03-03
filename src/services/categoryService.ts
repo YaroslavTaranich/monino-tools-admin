@@ -22,3 +22,29 @@ export const getCategoryById = async (id?: string | number) => {
 
   return res.data;
 };
+
+export const updateCategoryById = async (
+  id: string | number,
+  token: string,
+  data: ICategory
+) => {
+  const res = await axiosInstance.put<ICategory>(`/category/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res.data;
+};
+
+export const createCategory = async (token: string, data: ICategory) => {
+  const res = await axiosInstance.post<ICategory>("/category", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res.data;
+};
