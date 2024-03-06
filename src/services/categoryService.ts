@@ -11,8 +11,19 @@ export interface ICategory {
   image: string;
 }
 
+export interface ICategoryName {
+  id: number;
+  label: string;
+}
+
 export const getAllCategories = async () => {
   const res = await axiosInstance<ICategory[]>("/category");
+
+  return res.data;
+};
+
+export const getAllCategoriesNames = async () => {
+  const res = await axiosInstance<ICategoryName[]>("/category/names");
 
   return res.data;
 };

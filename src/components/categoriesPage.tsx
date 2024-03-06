@@ -1,39 +1,22 @@
 import { useFetch } from "../hooks/useFetch";
 import { ICategory, getAllCategories } from "../services/categoryService";
-import { Button, Flex, Space, Table } from "antd";
+import { Button, Flex, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "./loader";
+import ToolsTable from "./toolsTable";
 
 const columns: ColumnsType<ICategory> = [
-  //   {
-  //     title: "Название eng",
-  //     dataIndex: "name",
-  //     key: "name",
-  //   },
   {
-    title: "Название",
+    title: "Категория",
     dataIndex: "label",
     key: "label",
+    render: (text, record) => <Link to={`/category/${record.id}`}>{text}</Link>,
   },
-  //   {
-  //     title: "Заголовок",
-  //     dataIndex: "title",
-  //     key: "title",
-  //   },
   {
     title: "Описание",
     dataIndex: "description",
     key: "description",
-  },
-  {
-    title: "",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <Link to={`/category/${record.id}`}>Редактировать</Link>
-      </Space>
-    ),
   },
 ];
 
@@ -45,6 +28,17 @@ const CategoriesPage = () => {
     return <Loader />;
   }
 
+  const expandedRowRender = (
+    category: ICategory,
+    index: number,
+    indent: number,
+    expanded: boolean
+  ) => {
+    console.log(category);
+    if (!expanded) return null;
+    return <ToolsTable categoryId={category.id} />;
+  };
+
   return (
     <Flex vertical gap={16}>
       <Button type="primary" onClick={() => navigate("/category/create")}>
@@ -53,6 +47,7 @@ const CategoriesPage = () => {
       <Table
         dataSource={categories.map((cat) => ({ ...cat, key: cat.id }))}
         columns={columns}
+        expandable={{ expandedRowRender }}
       />
     </Flex>
   );

@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren } from "react";
 import { ICategory } from "../services/categoryService";
-import { Button, Form, Input, Space, Spin, notification } from "antd";
+import { Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
 interface ICategoryForm extends PropsWithChildren {
