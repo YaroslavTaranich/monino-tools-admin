@@ -61,14 +61,14 @@ export const useFormSubmit = <T>(options: IOptions<T>) => {
         setNotification({
           type: "success",
           message: "Сохранено!",
-          decription: link,
+          description: link,
         });
       } catch (error) {
         console.log(error);
         if (isAxiosError(error)) {
           setNotification({
             type: "error",
-            decription: error.response?.data.message,
+            description: error.response?.data.message,
           });
         }
       } finally {
