@@ -59,3 +59,23 @@ export const createCategory = async (token: string, data: ICategory) => {
 
   return res.data;
 };
+
+export const updateCategoryImage = async (token: string, id: number, image: File) => {
+  const res = await axiosInstance.post<ICategory>(`/category/${id}/image`, {image}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  })
+  return res.data.image
+}
+
+export const deleteCategoryImage = async (token: string, id: string, image: File) => {
+  const res = await axiosInstance.post<ICategory>(`/category/${id}/image`, {image}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  })
+  return res.data
+}

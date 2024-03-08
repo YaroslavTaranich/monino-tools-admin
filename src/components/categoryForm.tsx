@@ -63,14 +63,6 @@ const CategoryForm: FC<ICategoryForm> = ({
       >
         <TextArea rows={5} />
       </Form.Item>
-      <Form.Item
-        label="Картинка"
-        name="image"
-        initialValue={defaultValues?.image}
-        required
-      >
-        <Input />
-      </Form.Item>
       <Form.Item>{children}</Form.Item>
     </Form>
   );
