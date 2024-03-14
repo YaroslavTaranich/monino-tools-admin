@@ -13,6 +13,10 @@ const items: MenuProps["items"] = [
         label: "Инструмент",
         key: "tools",
     },
+    {
+        label: "Пользователи",
+        key: "user",
+    },
 ];
 
 const PageLayout: FC<PropsWithChildren> = ({children}) => {

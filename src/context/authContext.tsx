@@ -1,5 +1,6 @@
 import React, {createContext, FC, PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState,} from "react";
-import {getUserProfile, IUser} from "../services/authService";
+import {getUserProfile} from "../services/authService";
+import {IUser} from "../services/userService";
 
 interface IUserData {
     token: string | null;

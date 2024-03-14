@@ -9,6 +9,9 @@ import CreateCategoryPage from "../components/createCategoryPage";
 import {AuthContext} from "../context/authContext";
 import EditToolPage from "../components/editToolPage";
 import CreateToolPage from "../components/createToolPage";
+import EditUserPage from "../components/editUserPage";
+import UsersPage from "../components/usersPage";
+import CreateUserPage from "../components/createUserPage";
 
 const MyRoutes = () => {
     const {token} = useContext(AuthContext);
@@ -25,6 +28,11 @@ const MyRoutes = () => {
                     <Route index element={<CategoriesPage/>}/>
                     <Route path="create" element={<CreateCategoryPage/>}/>
                     <Route path=":id" element={<EditCategoryPage/>}/>
+                </Route>
+                <Route path="/user">
+                    <Route index element={<UsersPage/>}/>
+                    <Route path="create" element={<CreateUserPage/>}/>
+                    <Route path=":id" element={<EditUserPage/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/category"/>}/>
             </Routes>
