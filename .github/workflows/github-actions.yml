@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is running Pipeline 🚀
 on:
   push:
     branches:
-      - main
+      - master
 jobs:
   Build:
     runs-on: ubuntu-latest
