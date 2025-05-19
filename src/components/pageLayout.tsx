@@ -1,6 +1,7 @@
 import {useLocation, useNavigate} from "react-router-dom";
 import {Layout, Menu, MenuProps} from "antd";
 import {FC, PropsWithChildren} from "react";
+import logo from '../assets/logo.svg'
 
 const {Header, Content} = Layout;
 
@@ -24,8 +25,9 @@ const PageLayout: FC<PropsWithChildren> = ({children}) => {
     const {pathname} = useLocation();
 
     return (
-        <Layout style={{width: "100%", minHeight: "100vh"}}>
-            <Header style={{display: "flex", alignItems: "center"}}>
+        <Layout style={{width: "100%", minHeight: "100vh"}} color='#eeeeee'>
+            <Header style={{display: "flex", alignItems: "center", gap: 16}}>
+                <img src={logo} alt='' style={{width: 40, height: 40}}/> 
                 <Menu
                     mode="horizontal"
                     theme="dark"
