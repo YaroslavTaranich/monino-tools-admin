@@ -17,3 +17,19 @@ jobs:
       - run: echo "🖥️ Runing build"
       - run: npm ci
       - run: npm run build --if-present
+  Deploy: 
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: SSH and deploy (with password)
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        password: ${{ secrets.VPS_PASSWORD }}
+        script: |
+          cd monino-tools-nginx/
+          sh update-submodules.sh
+          sh rebuild-admin.sh
