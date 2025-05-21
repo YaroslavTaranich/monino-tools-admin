@@ -41,7 +41,6 @@ const UploadImage: FC<IUploadImageProps> = ({postImage, imagePath, id}) => {
             setLoading(true);
             try {
                 const path = await postImage(token, id, file)
-                console.log(file)
                 setImageUrl(`${process.env.REACT_APP_API_URL}/file/${path}`);
 
             } catch (error) {

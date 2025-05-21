@@ -43,7 +43,6 @@ export const useFormSubmit = <T extends { id: number }>(options: IOptions<T>) =>
     const [isSending, setIsSending] = useState(false);
 
     const onFinish = async (values: T) => {
-        console.log(values);
         setIsSending(true);
         if (token) {
             try {
@@ -64,7 +63,7 @@ export const useFormSubmit = <T extends { id: number }>(options: IOptions<T>) =>
                     description: link,
                 });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 if (isAxiosError(error)) {
                     setNotification({
                         type: "error",

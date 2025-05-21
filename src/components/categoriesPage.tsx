@@ -44,7 +44,6 @@ const CategoriesPage = () => {
         indent: number,
         expanded: boolean
     ) => {
-        console.log(category);
         if (!expanded) return null;
         return <ToolsTable categoryId={category.id}/>;
     };

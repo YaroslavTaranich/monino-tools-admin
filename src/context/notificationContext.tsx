@@ -24,9 +24,7 @@ const NotificationContextProvider: FC<PropsWithChildren> = ({children}) => {
         useState<INotificationData | null>(null);
 
     useEffect(() => {
-        console.log(notificationData);
         if (notificationData?.type === "success") {
-            console.log("allo");
             api.success({
                 message: notificationData.message,
                 description: notificationData.description,
@@ -34,8 +32,6 @@ const NotificationContextProvider: FC<PropsWithChildren> = ({children}) => {
             });
         }
         if (notificationData?.type === "error") {
-            console.log("allo");
-
             api.error({
                 message: notificationData.message || "Ошибка!",
                 description: notificationData.description,
