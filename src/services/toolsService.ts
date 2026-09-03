@@ -14,8 +14,7 @@ export interface ITool {
     image: string;
     price: number;
     zalog: number;
-    tool_type: string;
-    tool_type_id: number | null;
+    tool_type_id: number;
     toolType?: IToolType;
     popular: boolean;
     categoryId: number;
