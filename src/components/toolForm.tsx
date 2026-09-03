@@ -4,6 +4,7 @@ import { ITool } from "../services/toolsService";
 import TextArea from "antd/es/input/TextArea";
 import { useFetch } from "../hooks/useFetch";
 import { getAllCategoriesNames } from "../services/categoryService";
+import {getToolTypes} from "../services/toolTypesService";
 
 interface IToolFormProps extends PropsWithChildren {
   onFinish: (values: ITool) => void;
@@ -16,8 +17,20 @@ const ToolForm: FC<IToolFormProps> = ({
   defaultValues,
 }) => {
   const { data: names, loading, error } = useFetch(getAllCategoriesNames());
+  const {
+    data: toolTypes,
+    loading: toolTypesLoading,
+    error: toolTypesError,
+  } = useFetch(getToolTypes());
 
   const options = names?.map((name) => ({ value: name.id, label: name.label }));
+  const toolTypeOptions = toolTypes
+    ?.filter((toolType) => toolType.is_active || toolType.id === defaultValues?.tool_type_id)
+    .map((toolType) => ({
+      value: toolType.id,
+      label: toolType.is_active ? toolType.name : `${toolType.name} (скрыт)`,
+      disabled: !toolType.is_active && toolType.id !== defaultValues?.tool_type_id,
+    }));
 
   return (
     <Form layout="vertical" onFinish={onFinish}>
@@ -109,11 +122,16 @@ const ToolForm: FC<IToolFormProps> = ({
 
       <Form.Item
         label="Тип инструмента"
-        name="tool_type"
-        initialValue={defaultValues?.tool_type}
-        required
+        name="tool_type_id"
+        initialValue={defaultValues?.tool_type_id}
+        rules={[{required: true, message: "Выберите тип инструмента"}]}
       >
-        <Input />
+        <Select
+          disabled={toolTypesLoading || !!toolTypesError}
+          loading={toolTypesLoading}
+          options={toolTypeOptions}
+          placeholder="Выберите тип"
+        />
       </Form.Item>
       <Form.Item
         label="Категория инструмента"

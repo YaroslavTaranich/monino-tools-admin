@@ -1,5 +1,6 @@
 import axiosInstance from "./axios";
 import {ICategory} from "./categoryService";
+import {IToolType} from "./toolTypesService";
 
 export interface ITool {
     id: number;
@@ -14,6 +15,8 @@ export interface ITool {
     price: number;
     zalog: number;
     tool_type: string;
+    tool_type_id: number | null;
+    toolType?: IToolType;
     popular: boolean;
     categoryId: number;
 }

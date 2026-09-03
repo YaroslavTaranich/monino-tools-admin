@@ -16,6 +16,10 @@ const items: MenuProps["items"] = [
         key: "tools",
     },
     {
+        label: "Типы",
+        key: "tool-types",
+    },
+    {
         label: "Аккаунт",
         key: "account",
     },

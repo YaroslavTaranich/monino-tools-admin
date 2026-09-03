@@ -11,6 +11,7 @@ import EditToolPage from "../components/editToolPage";
 import CreateToolPage from "../components/createToolPage";
 import AccountPage from "../components/accountPage";
 import Loader from "../components/loader";
+import ToolTypesPage from "../components/toolTypesPage";
 
 const MyRoutes = () => {
     const {user, isLoading} = useContext(AuthContext);
@@ -31,6 +32,7 @@ const MyRoutes = () => {
                     <Route path=":id" element={<EditCategoryPage/>}/>
                 </Route>
                 <Route path="/account" element={<AccountPage/>}/>
+                <Route path="/tool-types" element={<ToolTypesPage/>}/>
                 <Route path="*" element={<Navigate to="/category"/>}/>
             </Routes>
         </PageLayout>
