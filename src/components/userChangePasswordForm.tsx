@@ -8,7 +8,7 @@ import {NotificationContext} from "../context/notificationContext";
 
 
 const UserForm = () => {
-    const {token, user} = useContext(AuthContext)
+    const {logout} = useContext(AuthContext)
     const [isSending, setIsSending] = useState(false)
     const [error, setError] = useState("")
     const {setNotification} = useContext(NotificationContext);
@@ -17,13 +17,12 @@ const UserForm = () => {
     const onFinish = async (values: IChangePassword) => {
         try {
             setIsSending(true)
-            if (token) {
-                await changeUserPassword(token, values)
-                setNotification({
-                    type: "success",
-                    message: "Пароль успешно изменён!"
-                })
-            }
+            await changeUserPassword(values)
+            setNotification({
+                type: "success",
+                message: "Пароль изменён. Войдите снова."
+            })
+            await logout()
         } catch (error) {
             if (isAxiosError(error)) {
                 setError(error.message)
@@ -46,27 +45,38 @@ const UserForm = () => {
         <Form layout="vertical" onFinish={onFinish} onChange={onChange} style={{marginTop: 16}}>
             <Title>Смена пароля</Title>
             <Form.Item
-                label="Имя пользователя"
-                name="name"
-                initialValue={user?.name}
-                required
-                style={{display: 'none'}}
-            >
-                <Input/>
-            </Form.Item>
-            <Form.Item
                 label="Старый пароль"
                 name="oldPassword"
-                required
+                rules={[{required: true, message: "Введите текущий пароль"}]}
             >
-                <Input type="password"/>
+                <Input.Password autoComplete="current-password"/>
             </Form.Item>
             <Form.Item
                 label="Новый пароль"
                 name="newPassword"
-                required
+                rules={[
+                    {required: true, message: "Введите новый пароль"},
+                    {min: 10, message: "Минимум 10 символов"},
+                ]}
             >
-                <Input type="password"/>
+                <Input.Password autoComplete="new-password"/>
+            </Form.Item>
+            <Form.Item
+                label="Повторите новый пароль"
+                name="confirmPassword"
+                dependencies={["newPassword"]}
+                rules={[
+                    {required: true, message: "Повторите новый пароль"},
+                    ({getFieldValue}) => ({
+                        validator(_, value) {
+                            return !value || getFieldValue("newPassword") === value
+                                ? Promise.resolve()
+                                : Promise.reject(new Error("Пароли не совпадают"));
+                        },
+                    }),
+                ]}
+            >
+                <Input.Password autoComplete="new-password"/>
             </Form.Item>
             <Form.Item>
                 <Button htmlType="submit" type="primary" disabled={isSending}>

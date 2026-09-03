@@ -9,12 +9,13 @@ import CreateCategoryPage from "../components/createCategoryPage";
 import {AuthContext} from "../context/authContext";
 import EditToolPage from "../components/editToolPage";
 import CreateToolPage from "../components/createToolPage";
-import EditUserPage from "../components/editUserPage";
-import UsersPage from "../components/usersPage";
-import CreateUserPage from "../components/createUserPage";
+import AccountPage from "../components/accountPage";
+import Loader from "../components/loader";
 
 const MyRoutes = () => {
-    const {token} = useContext(AuthContext);
+    const {user, isLoading} = useContext(AuthContext);
+
+    if (isLoading) return <Loader/>;
 
     const privateRotes = (
         <PageLayout>
@@ -29,11 +30,7 @@ const MyRoutes = () => {
                     <Route path="create" element={<CreateCategoryPage/>}/>
                     <Route path=":id" element={<EditCategoryPage/>}/>
                 </Route>
-                <Route path="/user">
-                    <Route index element={<UsersPage/>}/>
-                    <Route path="create" element={<CreateUserPage/>}/>
-                    <Route path=":id" element={<EditUserPage/>}/>
-                </Route>
+                <Route path="/account" element={<AccountPage/>}/>
                 <Route path="*" element={<Navigate to="/category"/>}/>
             </Routes>
         </PageLayout>
@@ -46,7 +43,7 @@ const MyRoutes = () => {
         </Routes>
     );
 
-    return !!token ? privateRotes : publicRoutes;
+    return !!user ? privateRotes : publicRoutes;
 };
 
 export default MyRoutes;

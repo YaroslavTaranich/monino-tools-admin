@@ -1,8 +1,8 @@
 import {Button, Form, Input, Space} from "antd";
 import React, {useContext, useState} from "react";
-import {authUser} from "../services/authService";
 import {AuthContext} from "../context/authContext";
 import {useNavigate} from "react-router-dom";
+import {isAxiosError} from "axios";
 
 type FieldType = {
     name: string;
@@ -11,17 +11,19 @@ type FieldType = {
 
 const AuthPage = () => {
     const [error, setError] = useState("");
-    const {updateUser} = useContext(AuthContext);
+    const {login} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const onFinish = async (values: FieldType) => {
         try {
-            const userData = await authUser(values.name, values.password);
-            updateUser!(userData);
+            await login(values.name, values.password);
             navigate("/tools");
-            localStorage.setItem("token", userData.token);
-        } catch (e) {
-            setError("Неверное имя пользователя или пароль");
+        } catch (error) {
+            setError(
+                isAxiosError(error) && error.response?.status === 429
+                    ? error.response.data.message
+                    : "Неверное имя пользователя или пароль"
+            );
         }
     };
 

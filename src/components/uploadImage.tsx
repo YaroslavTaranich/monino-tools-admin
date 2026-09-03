@@ -1,6 +1,5 @@
-import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
+import React, {ChangeEvent, FC, useEffect, useState} from 'react';
 import {Flex, Image, message} from "antd";
-import {AuthContext} from "../context/authContext";
 import {isAxiosError} from "axios";
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import FallBack from '../assets/fallback-photo.jpg'
@@ -18,13 +17,12 @@ const beforeUpload = (file: File) => {
 };
 
 interface IUploadImageProps {
-    postImage: (token: string, id: number, image: File) => Promise<string>;
+    postImage: (id: number, image: File) => Promise<string>;
     imagePath?: string;
     id: number;
 }
 
 const UploadImage: FC<IUploadImageProps> = ({postImage, imagePath, id}) => {
-    const {token} = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>("");
 
@@ -37,10 +35,10 @@ const UploadImage: FC<IUploadImageProps> = ({postImage, imagePath, id}) => {
 
         const isValid = beforeUpload(file)
 
-        if (isValid && token) {
+        if (isValid) {
             setLoading(true);
             try {
-                const path = await postImage(token, id, file)
+                const path = await postImage(id, file)
                 setImageUrl(`${process.env.REACT_APP_API_URL}/file/${path}`);
 
             } catch (error) {

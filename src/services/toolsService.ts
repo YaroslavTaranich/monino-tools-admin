@@ -38,34 +38,22 @@ export const getToolById = async (id?: string | number) => {
 
 export const updateToolById = async (
     id: string | number,
-    token: string,
     data: ITool
 ) => {
-    const res = await axiosInstance.put<ITool>(`/tools/${id}`, data, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+    const res = await axiosInstance.put<ITool>(`/tools/${id}`, data);
 
     return res.data;
 };
 
-export const createTool = async (token: string, data: ITool) => {
-    const res = await axiosInstance.post<ITool>("/tools", data, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+export const createTool = async (data: ITool) => {
+    const res = await axiosInstance.post<ITool>("/tools", data);
 
     return res.data;
 };
 
-export const updateToolImage = async (token: string, id: number, image: File) => {
+export const updateToolImage = async (id: number, image: File) => {
     const res = await axiosInstance.post<ICategory>(`/tools/${id}/image`, {image}, {
         headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
         },
     })

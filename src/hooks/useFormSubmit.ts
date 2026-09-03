@@ -1,17 +1,15 @@
 import React, {useContext, useState} from "react";
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useFetch} from "./useFetch";
-import {AuthContext} from "../context/authContext";
 import {NotificationContext} from "../context/notificationContext";
 import {isAxiosError} from "axios";
 
 type updateFnType<T> = (
     id: string | number,
-    token: string,
     data: T
 ) => Promise<T>;
 
-type createFnType<T> = (token: string, data: T) => Promise<T>;
+type createFnType<T> = (data: T) => Promise<T>;
 
 type GetDefaultValuesType<T> = (id?: string | number) => Promise<T>;
 
@@ -37,21 +35,19 @@ export const useFormSubmit = <T extends { id: number }>(options: IOptions<T>) =>
         loading,
         data: defaultValues,
     } = useFetch(getDefault ? getDefault(id) : undefined);
-    const {token} = useContext(AuthContext);
     const {setNotification} = useContext(NotificationContext);
     const navigate = useNavigate();
     const [isSending, setIsSending] = useState(false);
 
     const onFinish = async (values: T) => {
         setIsSending(true);
-        if (token) {
-            try {
+        try {
                 if (createFn) {
-                    const newData = await createFn(token, values);
+                    const newData = await createFn(values);
                     navigate(`/${getBackLink(pathname)}/${newData.id}`)
                 }
                 if (updateFn && id) {
-                    await updateFn(id, token, values);
+                    await updateFn(id, values);
                 }
                 const link = React.createElement(Link, {
                     to: `/${getBackLink(pathname)}`,
@@ -62,7 +58,7 @@ export const useFormSubmit = <T extends { id: number }>(options: IOptions<T>) =>
                     message: "Сохранено!",
                     description: link,
                 });
-            } catch (error) {
+        } catch (error) {
                 console.error(error);
                 if (isAxiosError(error)) {
                     setNotification({
@@ -70,9 +66,8 @@ export const useFormSubmit = <T extends { id: number }>(options: IOptions<T>) =>
                         description: error.response?.data.message,
                     });
                 }
-            } finally {
-                setIsSending(false);
-            }
+        } finally {
+            setIsSending(false);
         }
     };
 

@@ -1,44 +1,42 @@
 import axiosInstance from "./axios";
-import {IUser} from "./userService";
-
-
-interface IUserData {
-    token: string;
-    user: IUser;
+export interface IAdmin {
+    id: number;
+    name: string;
+    role: "admin";
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    avatar?: string;
 }
 
 export interface IChangePassword {
-    name: string;
     oldPassword: string;
     newPassword: string;
 }
 
 
 export const authUser = async (name: string, password: string) => {
-    const res = await axiosInstance.post<IUserData>("/auth/admin", {
+    const res = await axiosInstance.post<{user: IAdmin}>("/auth/login", {
         name,
         password,
     });
 
+    return res.data.user;
+};
+
+export const getUserProfile = async () => {
+    const res = await axiosInstance<IAdmin>("/auth/profile");
     return res.data;
 };
 
-export const getUserProfile = async (token: string) => {
-    const res = await axiosInstance<IUser>("/auth/profile", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
+export const changeUserPassword = async (passData: IChangePassword) => {
+    await axiosInstance.put("/auth/password", {
+        oldPassword: passData.oldPassword,
+        newPassword: passData.newPassword,
     });
-    return res.data;
 };
 
-export const changeUserPassword = async (token: string, passData: IChangePassword) => {
-    const res = await axiosInstance.put<IUser>("/auth/password", passData, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
-    return res.data;
+export const logoutUser = async () => {
+    await axiosInstance.post("/auth/logout");
 };
