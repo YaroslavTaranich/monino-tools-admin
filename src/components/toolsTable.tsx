@@ -23,6 +23,11 @@ const columns: ColumnsType<ITool> = [
         render: (text, record) => <Link to={`/tools/${record.id}`}>{text}</Link>,
     },
     {
+        title: "Условия аренды",
+        key: "accessory_only",
+        render: (_, record) => record.accessory_only ? "Только с основным инструментом" : "Самостоятельная аренда",
+    },
+    {
         title: "Цена",
         dataIndex: "price",
         key: "price",

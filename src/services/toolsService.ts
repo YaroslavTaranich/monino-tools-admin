@@ -16,6 +16,8 @@ export interface ITool {
     zalog: number;
     tool_type_id: number;
     toolType?: IToolType;
+    accessory_only?: boolean;
+    related_tool_ids?: number[];
     popular: boolean;
     categoryId: number;
 }

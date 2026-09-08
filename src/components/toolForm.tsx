@@ -1,6 +1,7 @@
-import React, { FC, PropsWithChildren } from "react";
-import { Divider, Form, Input, Select, Switch, Typography } from "antd";
-import { ITool } from "../services/toolsService";
+import React, { FC, PropsWithChildren, useMemo } from "react";
+import { Alert, Divider, Form, Input, Select, Switch, Typography } from "antd";
+import { getTools, ITool } from "../services/toolsService";
+import RelatedToolsSelect from "./relatedToolsSelect";
 import TextArea from "antd/es/input/TextArea";
 import { useFetch } from "../hooks/useFetch";
 import { getAllCategoriesNames } from "../services/categoryService";
@@ -16,12 +17,18 @@ const ToolForm: FC<IToolFormProps> = ({
   onFinish,
   defaultValues,
 }) => {
-  const { data: names, loading, error } = useFetch(getAllCategoriesNames());
+  const [form] = Form.useForm();
+  const accessoryOnly = Form.useWatch("accessory_only", form) ?? defaultValues?.accessory_only ?? false;
+  const toolsRequest = useMemo(() => getTools(), []);
+  const {data: tools, loading: toolsLoading, error: toolsError} = useFetch(toolsRequest);
+  const categoriesRequest = useMemo(() => getAllCategoriesNames(), []);
+  const typesRequest = useMemo(() => getToolTypes(), []);
+  const { data: names, loading, error } = useFetch(categoriesRequest);
   const {
     data: toolTypes,
     loading: toolTypesLoading,
     error: toolTypesError,
-  } = useFetch(getToolTypes());
+  } = useFetch(typesRequest);
 
   const options = names?.map((name) => ({ value: name.id, label: name.label }));
   const toolTypeOptions = toolTypes
@@ -33,7 +40,7 @@ const ToolForm: FC<IToolFormProps> = ({
     }));
 
   return (
-    <Form layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={onFinish}>
       <Divider />
       <Typography.Title level={3}>Заголовки</Typography.Title>
       <Form.Item
@@ -120,6 +127,25 @@ const ToolForm: FC<IToolFormProps> = ({
       <Divider />
       <Typography.Title level={3}>Дополнительно </Typography.Title>
 
+      <Form.Item label="Только с основным инструментом" name="accessory_only"
+        initialValue={defaultValues?.accessory_only ?? false} valuePropName="checked"
+        extra="Дополнение оплачивается отдельно по своей цене и тарифам за срок аренды.">
+        <Switch />
+      </Form.Item>
+      {toolsError && <Alert type="error" message="Не удалось загрузить совместимые позиции. Обновите страницу, чтобы редактировать связи." />}
+      <Form.Item label={accessoryOnly ? "Совместимые основные инструменты" : "Сопутствующие дополнения"}
+        name="related_tool_ids" initialValue={defaultValues?.related_tool_ids ?? []}
+        dependencies={["accessory_only"]}
+        extra="Связь добавляется и удаляется с обеих сторон. Порядок показа задаётся отдельно для этой карточки. При смене назначения удалите несовместимые связи."
+        rules={[{validator: async (_, ids: number[] = []) => {
+          if (tools && ids.some(id => {
+            const target = tools.find(tool => tool.id === id);
+            return !target || !!target.accessory_only === !!form.getFieldValue("accessory_only");
+          })) throw new Error("Удалите несовместимые связи перед сохранением");
+        }}]}>
+        <RelatedToolsSelect tools={(tools ?? []).filter(tool => tool.id !== defaultValues?.id)}
+          accessoryOnly={!!accessoryOnly} disabled={toolsLoading || !!toolsError} />
+      </Form.Item>
       <Form.Item
         label="Тип инструмента"
         name="tool_type_id"
