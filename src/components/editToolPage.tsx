@@ -3,9 +3,9 @@ import ToolForm from "./toolForm";
 import {Button, Spin} from "antd";
 import Loader from "./loader";
 import {Navigate} from "react-router-dom";
-import {getToolById, ITool, updateToolById, updateToolImage} from "../services/toolsService";
+import {getToolById, ITool, updateToolById} from "../services/toolsService";
 import {useFormSubmit} from "../hooks/useFormSubmit";
-import UploadImage from "./uploadImage";
+import ToolImages from "./toolImages";
 
 const EditToolPage = () => {
     const {
@@ -24,7 +24,7 @@ const EditToolPage = () => {
 
     return (
         <>
-            <UploadImage postImage={updateToolImage} id={tool.id} imagePath={tool.image}/>
+            <ToolImages tool={tool}/>
             <ToolForm onFinish={onFinish} defaultValues={tool}>
                 <Button htmlType="submit" type="primary" disabled={isSending}>
                     {isSending ? <Spin size="small"/> : "Сохранить"}

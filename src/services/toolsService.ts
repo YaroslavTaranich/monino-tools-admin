@@ -1,6 +1,18 @@
+import { AxiosProgressEvent } from "axios";
 import axiosInstance from "./axios";
-import {ICategory} from "./categoryService";
-import {IToolType} from "./toolTypesService";
+import { IToolType } from "./toolTypesService";
+
+export interface IToolImage {
+    id: number;
+    tool_id: number;
+    storage_key: string;
+    sort_order: number;
+    is_cover: boolean;
+    alt?: string;
+    mime_type?: string;
+    size?: number;
+    created_at: string;
+}
 
 export interface ITool {
     id: number;
@@ -12,6 +24,7 @@ export interface ITool {
     specification: string;
     html_description: string;
     image: string;
+    images?: IToolImage[];
     price: number;
     zalog: number;
     tool_type_id: number;
@@ -55,11 +68,36 @@ export const createTool = async (data: ITool) => {
     return res.data;
 };
 
-export const updateToolImage = async (id: number, image: File) => {
-    const res = await axiosInstance.post<ICategory>(`/tools/${id}/image`, {image}, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    })
-    return res.data.image
-}
+export const uploadToolImages = async (
+    id: number,
+    images: File[],
+    onUploadProgress?: (event: AxiosProgressEvent) => void
+) => {
+    const formData = new FormData();
+    images.forEach((image) => formData.append("images", image));
+    const res = await axiosInstance.post<ITool>(`/tools/${id}/images`, formData, {
+        onUploadProgress,
+    });
+    return res.data;
+};
+
+export const sortToolImages = async (id: number, imageIds: number[]) => {
+    const res = await axiosInstance.put<ITool>(`/tools/${id}/images/order`, {
+        image_ids: imageIds,
+    });
+    return res.data;
+};
+
+export const setToolImageCover = async (id: number, imageId: number) => {
+    const res = await axiosInstance.put<ITool>(
+        `/tools/${id}/images/${imageId}/cover`
+    );
+    return res.data;
+};
+
+export const deleteToolImage = async (id: number, imageId: number) => {
+    const res = await axiosInstance.delete<ITool>(
+        `/tools/${id}/images/${imageId}`
+    );
+    return res.data;
+};
