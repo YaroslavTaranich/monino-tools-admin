@@ -23,7 +23,6 @@ export interface ITool {
     description: string;
     specification: string;
     html_description: string;
-    image: string;
     images?: IToolImage[];
     price: number;
     zalog: number;

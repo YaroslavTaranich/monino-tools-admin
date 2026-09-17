@@ -13,7 +13,11 @@ const columns: ColumnsType<ITool> = [
         dataIndex: 'pic',
         key: "pic",
         render: (text, record) => (
-            <Image src={`${process.env.REACT_APP_API_URL}/file/${record.image}`} width={50} fallback={Fallback}/>
+            <Image
+                src={`${process.env.REACT_APP_API_URL}/file/${record.images?.find((image) => image.is_cover)?.storage_key ?? ""}`}
+                width={50}
+                fallback={Fallback}
+            />
         )
     },
     {
